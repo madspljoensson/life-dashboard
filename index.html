@@ -297,6 +297,11 @@
     </div>
 
     <script>
+        // Configuration
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8080/api'  // Local backend
+            : 'http://localhost:8080/api';  // For now, always use local - will add remote option later
+
         // Update date and time
         function updateDateTime() {
             const now = new Date();
@@ -312,59 +317,95 @@
             document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
         }
 
-        // Mock weather data (replace with actual API call)
-        function loadWeather() {
+        // Fetch real weather data
+        async function loadWeather() {
             const weatherEl = document.getElementById('weather');
             
-            // This would normally call your backend API
-            // For now, showing placeholder
-            weatherEl.innerHTML = `
-                <div class="weather-icon">☀️</div>
-                <div class="large-text">12°C</div>
-                <div class="metric">
-                    <span class="metric-label">Condition</span>
-                    <span class="metric-value">Partly Cloudy</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Feels Like</span>
-                    <span class="metric-value">10°C</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Wind</span>
-                    <span class="metric-value">15 km/h</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Humidity</span>
-                    <span class="metric-value">65%</span>
-                </div>
-                <div class="no-data" style="margin-top: 15px;">
-                    <span class="badge info">Demo Data - API Integration Pending</span>
-                </div>
-            `;
+            try {
+                const response = await fetch(`${API_BASE}/weather`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    weatherEl.innerHTML = `
+                        <div class="weather-icon">${data.icon}</div>
+                        <div class="large-text">${data.temperature}°C</div>
+                        <div class="metric">
+                            <span class="metric-label">Condition</span>
+                            <span class="metric-value">${data.condition}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Feels Like</span>
+                            <span class="metric-value">${data.feelsLike}°C</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Wind</span>
+                            <span class="metric-value">${data.windSpeed} km/h</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Humidity</span>
+                            <span class="metric-value">${data.humidity}%</span>
+                        </div>
+                        <span class="badge good" style="margin-top: 10px;">Live Data</span>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Failed to fetch weather');
+                }
+            } catch (error) {
+                console.error('Weather error:', error);
+                weatherEl.innerHTML = `
+                    <div class="no-data">
+                        Unable to fetch weather data
+                        <br><br>
+                        <span class="badge warning">Server Offline</span>
+                        <div style="margin-top: 10px; font-size: 0.85em;">
+                            Start the backend: <code>python server.py</code>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
-        // Mock calendar data
-        function loadCalendar() {
+        // Fetch real calendar data
+        async function loadCalendar() {
             const calendarEl = document.getElementById('calendar');
             
-            // This would normally call your gog calendar API
-            calendarEl.innerHTML = `
-                <div class="event">
-                    <div class="event-time">09:00 - 10:00</div>
-                    <div class="event-title">Morning Standup</div>
-                </div>
-                <div class="event">
-                    <div class="event-time">14:00 - 15:30</div>
-                    <div class="event-title">Project Review Meeting</div>
-                </div>
-                <div class="event">
-                    <div class="event-time">17:00 - 18:00</div>
-                    <div class="event-title">Gym</div>
-                </div>
-                <div class="no-data" style="margin-top: 15px;">
-                    <span class="badge info">Demo Data - Calendar API Integration Pending</span>
-                </div>
-            `;
+            try {
+                const response = await fetch(`${API_BASE}/calendar`);
+                const data = await response.json();
+                
+                if (data.success && data.events && data.events.length > 0) {
+                    const eventsHTML = data.events.map(event => `
+                        <div class="event">
+                            <div class="event-time">${event.start} - ${event.end}</div>
+                            <div class="event-title">${event.title}</div>
+                        </div>
+                    `).join('');
+                    
+                    calendarEl.innerHTML = `
+                        ${eventsHTML}
+                        <span class="badge good" style="margin-top: 10px;">Live Data</span>
+                    `;
+                } else if (data.events && data.events.length === 0) {
+                    calendarEl.innerHTML = `
+                        <div class="no-data">
+                            No events scheduled for today
+                            <br><br>
+                            <span class="badge info">Free Day!</span>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Calendar not configured');
+                }
+            } catch (error) {
+                console.error('Calendar error:', error);
+                calendarEl.innerHTML = `
+                    <div class="no-data">
+                        Calendar integration not configured
+                        <br><br>
+                        <span class="badge info">Configure gog CLI</span>
+                    </div>
+                `;
+            }
         }
 
         // Update last update time
