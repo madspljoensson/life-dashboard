@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Moon, TrendingUp } from 'lucide-react'
 import { format } from 'date-fns'
 import Card from '../components/Card'
 import StatCard from '../components/StatCard'
@@ -10,7 +9,6 @@ export default function Sleep() {
   const [entries, setEntries] = useState<SleepEntry[]>([])
   const [stats, setStats] = useState<WeeklySleepStats | null>(null)
   const [loading, setLoading] = useState(true)
-
   const [formDate, setFormDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [bedtime, setBedtime] = useState('')
   const [wakeTime, setWakeTime] = useState('')
@@ -35,81 +33,108 @@ export default function Sleep() {
     fetchData()
   }
 
-  const qualityLabels = ['Terrible', 'Poor', 'Okay', 'Good', 'Excellent']
+  const qualityLabels = ['Terrible', 'Poor', 'Average', 'Good', 'Excellent']
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: '10px 14px', borderRadius: '8px', fontSize: '13px',
+    border: '1px solid #1a1a24', backgroundColor: '#0f0f13',
+    color: '#f0f0f2', outline: 'none',
+  }
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 500, color: '#5a5a66',
+    letterSpacing: '0.04em', textTransform: 'uppercase' as const,
+    display: 'block', marginBottom: '6px',
+  }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       <div>
-        <h1 className="text-2xl font-bold text-text-primary">Sleep</h1>
-        <p className="text-sm mt-1 text-text-muted">Track and improve your rest</p>
+        <h1 style={{ fontSize: '22px', fontWeight: 600, color: '#f0f0f2', letterSpacing: '-0.02em' }}>Sleep</h1>
+        <p style={{ fontSize: '13px', color: '#5a5a66', marginTop: '4px' }}>Track and improve rest quality</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard label="Avg Duration" value={stats?.avg_duration ? `${stats.avg_duration}h` : '—'} icon={Moon} color="#a78bfa" subtitle="Last 7 days" />
-        <StatCard label="Avg Quality" value={stats?.avg_quality ? `${stats.avg_quality}/5` : '—'} icon={TrendingUp} color="#22c55e" subtitle="Last 7 days" />
-        <StatCard label="Entries" value={stats?.entries || 0} icon={Moon} color="#6366f1" subtitle="Last 7 days" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+        <StatCard label="Duration" value={stats?.avg_duration ? `${stats.avg_duration}h` : '--'} subtitle="7-day avg" accent="#6d5ed6" />
+        <StatCard label="Quality" value={stats?.avg_quality ? `${stats.avg_quality}/5` : '--'} subtitle="7-day avg" accent="#4ade80" />
+        <StatCard label="Entries" value={stats?.entries || 0} subtitle="Last week" accent="#8b7cf6" />
       </div>
 
-      <Card title="Log Sleep">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card title="Log Entry">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Date</label>
-            <input type="date" value={formDate} onChange={e => setFormDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none" />
+            <label style={labelStyle}>Date</label>
+            <input type="date" value={formDate} onChange={e => setFormDate(e.target.value)} style={inputStyle} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Quality</label>
-            <div className="flex gap-2">
+            <label style={labelStyle}>Quality</label>
+            <div style={{ display: 'flex', gap: '6px' }}>
               {[1,2,3,4,5].map(n => (
-                <button key={n} onClick={() => setQuality(n)}
-                  className={`w-10 h-10 rounded-lg border text-sm font-medium transition-all ${
-                    quality === n ? 'bg-accent border-accent text-white' : 'bg-bg-secondary border-border-default text-text-secondary'
-                  }`}>{n}</button>
+                <button key={n} onClick={() => setQuality(n)} style={{
+                  width: '38px', height: '38px', borderRadius: '6px', border: 'none',
+                  fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+                  backgroundColor: quality === n ? '#8b7cf6' : '#0f0f13',
+                  color: quality === n ? '#fff' : '#5a5a66',
+                }}>{n}</button>
               ))}
             </div>
-            <p className="text-xs mt-1 text-text-muted">{qualityLabels[quality - 1]}</p>
+            <span style={{ fontSize: '11px', color: '#5a5a66', marginTop: '4px', display: 'block' }}>
+              {qualityLabels[quality - 1]}
+            </span>
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Bedtime</label>
-            <input type="time" value={bedtime} onChange={e => setBedtime(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none" />
+            <label style={labelStyle}>Bedtime</label>
+            <input type="time" value={bedtime} onChange={e => setBedtime(e.target.value)} style={inputStyle} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Wake Time</label>
-            <input type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none" />
+            <label style={labelStyle}>Wake</label>
+            <input type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} style={inputStyle} />
           </div>
-          <div className="md:col-span-2">
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Notes</label>
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="How did you sleep?" rows={2}
-              className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none resize-none" />
+          <div style={{ gridColumn: 'span 2' }}>
+            <label style={labelStyle}>Notes</label>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional notes"
+              rows={2} style={{ ...inputStyle, resize: 'none' as const }} />
           </div>
-          <div className="md:col-span-2">
-            <button onClick={handleLog} className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-accent hover:bg-accent-hover transition-colors">
-              Log Sleep
-            </button>
+          <div style={{ gridColumn: 'span 2' }}>
+            <button onClick={handleLog} style={{
+              width: '100%', padding: '11px', borderRadius: '8px', border: 'none',
+              fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+              backgroundColor: '#8b7cf6', color: '#fff',
+            }}>Log Sleep</button>
           </div>
         </div>
       </Card>
 
-      <Card title="Recent Entries">
+      <Card title="History">
         {loading ? (
-          <p className="text-sm py-4 text-center text-text-muted">Loading...</p>
+          <p style={{ fontSize: '13px', color: '#5a5a66' }}>Loading</p>
         ) : entries.length === 0 ? (
-          <p className="text-sm py-4 text-center text-text-muted">No sleep entries yet 🌙</p>
+          <p style={{ fontSize: '13px', color: '#5a5a66' }}>No entries recorded</p>
         ) : (
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {entries.map(entry => (
-              <div key={entry.id} className="flex items-center gap-4 px-3 py-2.5 rounded-lg bg-bg-secondary">
-                <span className="text-xs w-20 font-mono text-text-muted">{format(new Date(entry.date), 'MMM d')}</span>
-                <div className="flex-1 h-2 rounded-full overflow-hidden bg-border-default">
-                  <div className="h-full rounded-full" style={{
+              <div key={entry.id} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '8px 12px', borderRadius: '8px', backgroundColor: '#0f0f13',
+              }}>
+                <span style={{ fontSize: '11px', width: '56px', color: '#5a5a66', fontFamily: 'monospace' }}>
+                  {format(new Date(entry.date), 'MMM d')}
+                </span>
+                <div style={{ flex: 1, height: '4px', borderRadius: '2px', overflow: 'hidden', backgroundColor: '#1a1a24' }}>
+                  <div style={{
+                    height: '100%', borderRadius: '2px',
                     width: `${Math.min(((entry.duration_hours || 0) / 10) * 100, 100)}%`,
-                    backgroundColor: (entry.duration_hours || 0) >= 7 ? '#22c55e' : (entry.duration_hours || 0) >= 5 ? '#f59e0b' : '#ef4444',
+                    backgroundColor: (entry.duration_hours || 0) >= 7 ? '#4ade80' :
+                                      (entry.duration_hours || 0) >= 5 ? '#fbbf24' : '#f87171',
+                    opacity: 0.7,
                   }} />
                 </div>
-                <span className="text-xs w-12 text-right font-mono text-text-secondary">{entry.duration_hours ? `${entry.duration_hours}h` : '—'}</span>
-                <span className="text-xs w-8 text-right text-text-muted">{entry.quality ? `${entry.quality}/5` : ''}</span>
+                <span style={{ fontSize: '12px', width: '36px', textAlign: 'right', fontFamily: 'monospace', color: '#94949e' }}>
+                  {entry.duration_hours ? `${entry.duration_hours}h` : '--'}
+                </span>
+                <span style={{ fontSize: '11px', width: '24px', textAlign: 'right', color: '#5a5a66' }}>
+                  {entry.quality ? `${entry.quality}` : ''}
+                </span>
               </div>
             ))}
           </div>

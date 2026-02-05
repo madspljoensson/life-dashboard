@@ -1,26 +1,34 @@
-import type { ComponentType } from 'react'
-
 interface StatCardProps {
   label: string
   value: string | number
-  icon: ComponentType<{ size?: number; className?: string }>
-  color?: string
   subtitle?: string
+  accent?: string
 }
 
-export default function StatCard({ label, value, icon: Icon, color, subtitle }: StatCardProps) {
+export default function StatCard({ label, value, subtitle, accent = '#8b7cf6' }: StatCardProps) {
   return (
-    <div className="rounded-xl border border-border-default bg-bg-card p-4 flex items-center gap-4">
-      <div
-        className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-        style={{ backgroundColor: color ? `${color}20` : '#6366f120', color: color || '#6366f1' }}
-      >
-        <Icon size={20} />
+    <div style={{
+      borderRadius: '12px',
+      border: '1px solid #1a1a24',
+      backgroundColor: '#111116',
+      padding: '20px',
+    }}>
+      <div style={{ fontSize: '11px', fontWeight: 500, color: '#5a5a66', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+        {label}
       </div>
-      <div className="min-w-0">
-        <p className="text-xs font-medium text-text-muted">{label}</p>
-        <p className="text-lg font-bold text-text-primary">{value}</p>
-        {subtitle && <p className="text-xs text-text-secondary">{subtitle}</p>}
+      <div style={{ fontSize: '28px', fontWeight: 600, color: '#f0f0f2', marginTop: '8px', lineHeight: 1 }}>
+        {value}
+      </div>
+      {subtitle && (
+        <div style={{ fontSize: '11px', color: '#5a5a66', marginTop: '6px' }}>
+          {subtitle}
+        </div>
+      )}
+      <div style={{
+        width: '100%', height: '2px', borderRadius: '1px',
+        backgroundColor: '#1a1a24', marginTop: '14px', overflow: 'hidden',
+      }}>
+        <div style={{ width: '60%', height: '100%', backgroundColor: accent, borderRadius: '1px', opacity: 0.6 }} />
       </div>
     </div>
   )

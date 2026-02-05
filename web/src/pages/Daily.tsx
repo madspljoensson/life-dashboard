@@ -7,7 +7,6 @@ import type { DailyNote } from '../types'
 export default function Daily() {
   const [entries, setEntries] = useState<DailyNote[]>([])
   const [loading, setLoading] = useState(true)
-
   const [formDate, setFormDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [mood, setMood] = useState(3)
   const [energy, setEnergy] = useState(3)
@@ -31,82 +30,115 @@ export default function Daily() {
     fetchData()
   }
 
-  const moodEmojis = ['😫', '😕', '😐', '🙂', '😊']
-  const energyLabels = ['Drained', 'Low', 'Normal', 'Good', 'Energized']
+  const moodLabels = ['Low', 'Below avg', 'Neutral', 'Good', 'Great']
+  const energyLabels = ['Drained', 'Low', 'Normal', 'Good', 'High']
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: '10px 14px', borderRadius: '8px', fontSize: '13px',
+    border: '1px solid #1a1a24', backgroundColor: '#0f0f13',
+    color: '#f0f0f2', outline: 'none',
+  }
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: '11px', fontWeight: 500, color: '#5a5a66',
+    letterSpacing: '0.04em', textTransform: 'uppercase' as const,
+    display: 'block', marginBottom: '8px',
+  }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       <div>
-        <h1 className="text-2xl font-bold text-text-primary">Daily Check-in</h1>
-        <p className="text-sm mt-1 text-text-muted">How's your day going?</p>
+        <h1 style={{ fontSize: '22px', fontWeight: 600, color: '#f0f0f2', letterSpacing: '-0.02em' }}>Journal</h1>
+        <p style={{ fontSize: '13px', color: '#5a5a66', marginTop: '4px' }}>Daily reflection</p>
       </div>
 
-      <Card title="Today's Check-in">
-        <div className="space-y-5">
+      <Card title="Check-in">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Date</label>
+            <label style={labelStyle}>Date</label>
             <input type="date" value={formDate} onChange={e => setFormDate(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none" />
+              style={{ ...inputStyle, width: 'auto' }} />
           </div>
 
+          {/* Mood */}
           <div>
-            <label className="text-xs font-medium block mb-2 text-text-muted">Mood</label>
-            <div className="flex gap-3">
-              {moodEmojis.map((emoji, i) => (
-                <button key={i} onClick={() => setMood(i + 1)}
-                  className={`w-12 h-12 rounded-xl text-xl transition-all ${
-                    mood === i + 1 ? 'scale-110 ring-2 ring-accent bg-bg-card-hover' : 'opacity-50 hover:opacity-80 bg-bg-secondary'
-                  }`}>{emoji}</button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-medium block mb-2 text-text-muted">Energy — {energyLabels[energy - 1]}</label>
-            <div className="flex gap-2">
+            <label style={labelStyle}>Mood — {moodLabels[mood - 1]}</label>
+            <div style={{ display: 'flex', gap: '6px' }}>
               {[1,2,3,4,5].map(n => (
-                <button key={n} onClick={() => setEnergy(n)}
-                  className={`flex-1 h-3 rounded-full transition-all ${n <= energy ? 'bg-accent' : 'bg-border-default'}`} />
+                <button key={n} onClick={() => setMood(n)} style={{
+                  width: '44px', height: '38px', borderRadius: '6px', border: 'none',
+                  fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+                  backgroundColor: mood === n ? '#8b7cf6' : '#0f0f13',
+                  color: mood === n ? '#fff' : '#5a5a66',
+                }}>{n}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Energy */}
+          <div>
+            <label style={labelStyle}>Energy — {energyLabels[energy - 1]}</label>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {[1,2,3,4,5].map(n => (
+                <div key={n} onClick={() => setEnergy(n)} style={{
+                  flex: 1, height: '6px', borderRadius: '3px', cursor: 'pointer',
+                  backgroundColor: n <= energy ? '#8b7cf6' : '#1a1a24',
+                  transition: 'background-color 0.15s ease',
+                }} />
               ))}
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Note</label>
-            <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="What's on your mind today?" rows={3}
-              className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none resize-none" />
+            <label style={labelStyle}>Note</label>
+            <textarea value={note} onChange={e => setNote(e.target.value)}
+              placeholder="How was today?" rows={3}
+              style={{ ...inputStyle, resize: 'none' as const }} />
           </div>
 
           <div>
-            <label className="text-xs font-medium block mb-1.5 text-text-muted">Highlights</label>
-            <input type="text" value={highlights} onChange={e => setHighlights(e.target.value)} placeholder="Best moments of the day"
-              className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none" />
+            <label style={labelStyle}>Highlights</label>
+            <input type="text" value={highlights} onChange={e => setHighlights(e.target.value)}
+              placeholder="What stood out" style={inputStyle} />
           </div>
 
-          <button onClick={handleSave}
-            className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-accent hover:bg-accent-hover transition-colors">
-            Save Check-in
-          </button>
+          <button onClick={handleSave} style={{
+            width: '100%', padding: '11px', borderRadius: '8px', border: 'none',
+            fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+            backgroundColor: '#8b7cf6', color: '#fff',
+          }}>Save Entry</button>
         </div>
       </Card>
 
-      <Card title="Recent Days">
+      <Card title="Recent">
         {loading ? (
-          <p className="text-sm py-4 text-center text-text-muted">Loading...</p>
+          <p style={{ fontSize: '13px', color: '#5a5a66' }}>Loading</p>
         ) : entries.length === 0 ? (
-          <p className="text-sm py-4 text-center text-text-muted">No entries yet. Start checking in! 📝</p>
+          <p style={{ fontSize: '13px', color: '#5a5a66' }}>No entries yet</p>
         ) : (
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {entries.map(entry => (
-              <div key={entry.id} className="flex items-center gap-4 px-3 py-2.5 rounded-lg bg-bg-secondary">
-                <span className="text-xs w-20 font-mono text-text-muted">{format(new Date(entry.date), 'MMM d')}</span>
-                <span className="text-lg">{entry.mood ? moodEmojis[entry.mood - 1] : '—'}</span>
-                <div className="flex gap-1 w-20">
+              <div key={entry.id} style={{
+                display: 'flex', alignItems: 'center', gap: '16px',
+                padding: '10px 12px', borderRadius: '8px', backgroundColor: '#0f0f13',
+              }}>
+                <span style={{ fontSize: '11px', width: '56px', fontFamily: 'monospace', color: '#5a5a66' }}>
+                  {format(new Date(entry.date), 'MMM d')}
+                </span>
+                <span style={{ fontSize: '13px', color: '#94949e', width: '24px' }}>
+                  {entry.mood || '--'}
+                </span>
+                <div style={{ display: 'flex', gap: '3px', width: '60px' }}>
                   {[1,2,3,4,5].map(n => (
-                    <div key={n} className={`flex-1 h-1.5 rounded-full ${n <= (entry.energy || 0) ? 'bg-accent' : 'bg-border-default'}`} />
+                    <div key={n} style={{
+                      flex: 1, height: '3px', borderRadius: '1.5px',
+                      backgroundColor: n <= (entry.energy || 0) ? '#8b7cf6' : '#1a1a24',
+                    }} />
                   ))}
                 </div>
-                <span className="text-xs flex-1 truncate text-text-secondary">{entry.note || ''}</span>
+                <span style={{ fontSize: '12px', flex: 1, color: '#5a5a66', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {entry.note || ''}
+                </span>
               </div>
             ))}
           </div>

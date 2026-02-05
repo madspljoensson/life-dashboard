@@ -1,19 +1,27 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Inter';
+  src: local('Inter');
+}
+
 @theme {
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #12121a;
-  --color-bg-card: #1a1a2e;
-  --color-bg-card-hover: #1e1e35;
-  --color-border-default: #2a2a40;
-  --color-text-primary: #e4e4e7;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #71717a;
-  --color-accent: #6366f1;
-  --color-accent-hover: #818cf8;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #0f0f13;
+  --color-bg-card: #16161d;
+  --color-bg-card-hover: #1c1c26;
+  --color-bg-elevated: #1e1e28;
+  --color-border-default: #23232f;
+  --color-border-subtle: #1a1a24;
+  --color-text-primary: #f0f0f2;
+  --color-text-secondary: #94949e;
+  --color-text-muted: #5a5a66;
+  --color-accent: #8b7cf6;
+  --color-accent-dim: #6d5ed6;
+  --color-accent-glow: #8b7cf620;
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
 }
 
 * {
@@ -22,24 +30,25 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 15px;
+}
+
 body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border-default);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #23232f; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #33333f; }
+
+::selection {
+  background: #8b7cf640;
+  color: #f0f0f2;
 }

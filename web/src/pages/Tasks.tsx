@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, Check } from 'lucide-react'
+import { Plus, X, Check } from 'lucide-react'
 import Card from '../components/Card'
 import { tasks as tasksApi } from '../lib/api'
 import type { Task } from '../types'
@@ -24,8 +24,7 @@ export default function Tasks() {
   }
 
   const handleToggle = async (task: Task) => {
-    const newStatus = task.status === 'done' ? 'todo' : 'done'
-    await tasksApi.update(task.id, { status: newStatus })
+    await tasksApi.update(task.id, { status: task.status === 'done' ? 'todo' : 'done' })
     fetchTasks()
   }
 
@@ -38,75 +37,78 @@ export default function Tasks() {
   const doneTasks = taskList.filter(t => t.status === 'done')
 
   const priorityColor: Record<string, string> = {
-    urgent: '#ef4444', high: '#f59e0b', medium: '#6366f1', low: '#71717a',
+    urgent: '#f87171', high: '#fbbf24', medium: '#8b7cf6', low: '#33333f',
+  }
+
+  const inputStyle: React.CSSProperties = {
+    padding: '10px 14px', borderRadius: '8px', fontSize: '13px',
+    border: '1px solid #1a1a24', backgroundColor: '#0f0f13',
+    color: '#f0f0f2', outline: 'none',
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       <div>
-        <h1 className="text-2xl font-bold text-text-primary">Tasks</h1>
-        <p className="text-sm mt-1 text-text-muted">
-          {activeTasks.length} active · {doneTasks.length} completed
+        <h1 style={{ fontSize: '22px', fontWeight: 600, color: '#f0f0f2', letterSpacing: '-0.02em' }}>Tasks</h1>
+        <p style={{ fontSize: '13px', color: '#5a5a66', marginTop: '4px' }}>
+          {activeTasks.length} active / {doneTasks.length} done
         </p>
       </div>
 
-      {/* Add Task */}
+      {/* Add */}
       <Card>
-        <div className="flex gap-3">
+        <div style={{ display: 'flex', gap: '8px' }}>
           <input
-            type="text"
-            placeholder="Add a new task..."
-            value={newTask}
+            type="text" placeholder="New task" value={newTask}
             onChange={e => setNewTask(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
-            className="flex-1 px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none focus:ring-2 focus:ring-accent/50"
+            style={{ ...inputStyle, flex: 1 }}
           />
-          <select
-            value={newPriority}
-            onChange={e => setNewPriority(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none"
-          >
+          <select value={newPriority} onChange={e => setNewPriority(e.target.value)}
+            style={{ ...inputStyle, cursor: 'pointer' }}>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
             <option value="urgent">Urgent</option>
           </select>
-          <button
-            onClick={handleAdd}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-accent hover:bg-accent-hover transition-colors"
-          >
-            <Plus size={16} />
+          <button onClick={handleAdd} style={{
+            padding: '10px 16px', borderRadius: '8px', border: 'none',
+            backgroundColor: '#8b7cf6', color: 'white', cursor: 'pointer',
+            display: 'flex', alignItems: 'center',
+          }}>
+            <Plus size={15} />
           </button>
         </div>
       </Card>
 
-      {/* Active Tasks */}
-      <Card title="Active" subtitle={`${activeTasks.length} tasks`}>
+      {/* Active */}
+      <Card title="Active">
         {loading ? (
-          <p className="text-sm py-4 text-center text-text-muted">Loading...</p>
+          <p style={{ fontSize: '13px', color: '#5a5a66', padding: '12px 0' }}>Loading</p>
         ) : activeTasks.length === 0 ? (
-          <p className="text-sm py-4 text-center text-text-muted">All done! 🎉</p>
+          <p style={{ fontSize: '13px', color: '#5a5a66', padding: '12px 0' }}>All clear</p>
         ) : (
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {activeTasks.map(task => (
-              <div
-                key={task.id}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-bg-secondary group"
-              >
-                <button
-                  onClick={() => handleToggle(task)}
-                  className="w-5 h-5 rounded border-2 border-border-default flex items-center justify-center shrink-0 transition-colors hover:border-success"
-                />
-                <div
-                  className="w-2 h-2 rounded-full shrink-0"
-                  style={{ backgroundColor: priorityColor[task.priority] }}
-                />
-                <span className="text-sm flex-1 text-text-primary">{task.title}</span>
-                <button
-                  onClick={() => handleDelete(task.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-danger"
-                >
-                  <Trash2 size={14} />
+              <div key={task.id} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '10px 12px', borderRadius: '8px', backgroundColor: '#0f0f13',
+              }}>
+                <button onClick={() => handleToggle(task)} style={{
+                  width: '18px', height: '18px', borderRadius: '4px',
+                  border: '1.5px solid #33333f', backgroundColor: 'transparent',
+                  cursor: 'pointer', flexShrink: 0,
+                }} />
+                <div style={{
+                  width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0,
+                  backgroundColor: priorityColor[task.priority],
+                }} />
+                <span style={{ fontSize: '13px', flex: 1, color: '#f0f0f2' }}>{task.title}</span>
+                <button onClick={() => handleDelete(task.id)} style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: '#33333f', padding: '4px', opacity: 0.5,
+                }}>
+                  <X size={13} />
                 </button>
               </div>
             ))}
@@ -114,28 +116,26 @@ export default function Tasks() {
         )}
       </Card>
 
-      {/* Completed */}
+      {/* Done */}
       {doneTasks.length > 0 && (
-        <Card title="Completed" subtitle={`${doneTasks.length} tasks`}>
-          <div className="space-y-2">
+        <Card title="Completed">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {doneTasks.slice(0, 10).map(task => (
-              <div
-                key={task.id}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-bg-secondary opacity-60 group"
-              >
-                <button
-                  onClick={() => handleToggle(task)}
-                  className="w-5 h-5 rounded border-2 border-success bg-success flex items-center justify-center shrink-0"
-                >
-                  <Check size={12} color="white" />
+              <div key={task.id} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '8px 12px', borderRadius: '8px', backgroundColor: '#0f0f13', opacity: 0.5,
+              }}>
+                <button onClick={() => handleToggle(task)} style={{
+                  width: '18px', height: '18px', borderRadius: '4px',
+                  border: '1.5px solid #4ade80', backgroundColor: '#4ade80',
+                  cursor: 'pointer', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Check size={11} color="#09090b" strokeWidth={3} />
                 </button>
-                <span className="text-sm flex-1 line-through text-text-primary">{task.title}</span>
-                <button
-                  onClick={() => handleDelete(task.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-danger"
-                >
-                  <Trash2 size={14} />
-                </button>
+                <span style={{ fontSize: '13px', flex: 1, color: '#94949e', textDecoration: 'line-through' }}>
+                  {task.title}
+                </span>
               </div>
             ))}
           </div>

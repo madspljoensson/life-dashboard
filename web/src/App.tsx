@@ -12,7 +12,12 @@ export default function App() {
     <BrowserRouter>
       <div style={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar />
-        <main style={{ flex: 1, marginLeft: '256px', padding: '32px', maxWidth: '1200px' }}>
+        <main style={{
+          flex: 1,
+          marginLeft: '220px',
+          padding: '40px 48px',
+          maxWidth: '1100px',
+        }}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/tasks" element={<Tasks />} />
