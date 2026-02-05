@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CheckSquare, Moon, Smile, Zap, Clock, TrendingUp } from 'lucide-react'
+import { CheckSquare, Moon, Smile, Zap } from 'lucide-react'
 import { format } from 'date-fns'
 import Card from '../components/Card'
 import StatCard from '../components/StatCard'
@@ -21,13 +21,19 @@ export default function Dashboard() {
   }, [])
 
   const activeTasks = taskList.filter(t => t.status !== 'done')
-  const doneTasks = taskList.filter(t => t.status === 'done')
   const todayStr = format(new Date(), 'EEEE, MMMM d')
+
+  const greeting = () => {
+    const h = new Date().getHours()
+    if (h < 12) return 'Good morning'
+    if (h < 18) return 'Good afternoon'
+    return 'Good evening'
+  }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading...</div>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-sm text-text-muted">Loading...</div>
       </div>
     )
   }
@@ -36,17 +42,17 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">Good evening</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>{todayStr}</p>
+        <h1 className="text-2xl font-bold text-text-primary">{greeting()}</h1>
+        <p className="text-sm mt-1 text-text-muted">{todayStr}</p>
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Active Tasks"
           value={activeTasks.length}
           icon={CheckSquare}
-          color="var(--accent)"
+          color="#6366f1"
         />
         <StatCard
           label="Avg Sleep"
@@ -59,25 +65,24 @@ export default function Dashboard() {
           label="Mood"
           value={todayNote?.mood ? ['😫','😕','😐','🙂','😊'][todayNote.mood - 1] : '—'}
           icon={Smile}
-          color="var(--success)"
+          color="#22c55e"
           subtitle="Today"
         />
         <StatCard
           label="Energy"
           value={todayNote?.energy ? `${todayNote.energy}/5` : '—'}
           icon={Zap}
-          color="var(--warning)"
+          color="#f59e0b"
           subtitle="Today"
         />
       </div>
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* Tasks */}
         <Card title="Today's Tasks" subtitle={`${activeTasks.length} active`}>
           {activeTasks.length === 0 ? (
-            <p className="text-sm py-4 text-center" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-sm py-4 text-center text-text-muted">
               No active tasks. Nice! 🎉
             </p>
           ) : (
@@ -85,27 +90,23 @@ export default function Dashboard() {
               {activeTasks.slice(0, 8).map(task => (
                 <div
                   key={task.id}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg"
-                  style={{ backgroundColor: 'var(--bg-secondary)' }}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg bg-bg-secondary"
                 >
                   <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    className="w-2 h-2 rounded-full shrink-0"
                     style={{
                       backgroundColor:
-                        task.priority === 'urgent' ? 'var(--danger)' :
-                        task.priority === 'high' ? 'var(--warning)' :
-                        task.priority === 'medium' ? 'var(--accent)' :
-                        'var(--text-muted)',
+                        task.priority === 'urgent' ? '#ef4444' :
+                        task.priority === 'high' ? '#f59e0b' :
+                        task.priority === 'medium' ? '#6366f1' : '#71717a',
                     }}
                   />
-                  <span className="text-sm flex-1 truncate">{task.title}</span>
-                  <span
-                    className="text-xs px-2 py-0.5 rounded-full"
-                    style={{
-                      backgroundColor: task.status === 'in_progress' ? 'var(--accent)20' : 'var(--border)',
-                      color: task.status === 'in_progress' ? 'var(--accent)' : 'var(--text-muted)',
-                    }}
-                  >
+                  <span className="text-sm flex-1 truncate text-text-primary">{task.title}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                    task.status === 'in_progress'
+                      ? 'bg-accent/20 text-accent'
+                      : 'bg-border-default text-text-muted'
+                  }`}>
                     {task.status === 'in_progress' ? 'In Progress' : 'Todo'}
                   </span>
                 </div>
@@ -115,9 +116,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Sleep Chart */}
-        <Card title="Sleep This Week" subtitle={sleepStats?.avg_quality ? `Avg quality: ${sleepStats.avg_quality}/5` : ''}>
+        <Card title="Sleep This Week" subtitle={sleepStats?.avg_quality ? `Avg quality: ${sleepStats.avg_quality}/5` : undefined}>
           {!sleepStats?.data?.length ? (
-            <p className="text-sm py-4 text-center" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-sm py-4 text-center text-text-muted">
               No sleep data yet. Start tracking! 🌙
             </p>
           ) : (
@@ -125,23 +126,22 @@ export default function Dashboard() {
               {sleepStats.data.map(entry => (
                 <div
                   key={entry.id}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg"
-                  style={{ backgroundColor: 'var(--bg-secondary)' }}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg bg-bg-secondary"
                 >
-                  <span className="text-xs w-16" style={{ color: 'var(--text-muted)' }}>
+                  <span className="text-xs w-16 text-text-muted">
                     {format(new Date(entry.date), 'EEE d')}
                   </span>
-                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--border)' }}>
+                  <div className="flex-1 h-2 rounded-full overflow-hidden bg-border-default">
                     <div
                       className="h-full rounded-full transition-all"
                       style={{
                         width: `${Math.min(((entry.duration_hours || 0) / 10) * 100, 100)}%`,
-                        backgroundColor: (entry.duration_hours || 0) >= 7 ? 'var(--success)' :
-                                          (entry.duration_hours || 0) >= 5 ? 'var(--warning)' : 'var(--danger)',
+                        backgroundColor: (entry.duration_hours || 0) >= 7 ? '#22c55e' :
+                                          (entry.duration_hours || 0) >= 5 ? '#f59e0b' : '#ef4444',
                       }}
                     />
                   </div>
-                  <span className="text-xs w-10 text-right font-mono" style={{ color: 'var(--text-secondary)' }}>
+                  <span className="text-xs w-10 text-right font-mono text-text-secondary">
                     {entry.duration_hours ? `${entry.duration_hours}h` : '—'}
                   </span>
                 </div>
@@ -154,11 +154,11 @@ export default function Dashboard() {
       {/* Daily Note */}
       <Card title="Today's Note">
         {todayNote?.note ? (
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-sm leading-relaxed text-text-secondary">
             {todayNote.note}
           </p>
         ) : (
-          <p className="text-sm py-2" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm py-2 text-text-muted">
             No note for today yet.
           </p>
         )}

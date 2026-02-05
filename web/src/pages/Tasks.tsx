@@ -37,18 +37,15 @@ export default function Tasks() {
   const activeTasks = taskList.filter(t => t.status !== 'done')
   const doneTasks = taskList.filter(t => t.status === 'done')
 
-  const priorityColors: Record<string, string> = {
-    urgent: 'var(--danger)',
-    high: 'var(--warning)',
-    medium: 'var(--accent)',
-    low: 'var(--text-muted)',
+  const priorityColor: Record<string, string> = {
+    urgent: '#ef4444', high: '#f59e0b', medium: '#6366f1', low: '#71717a',
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Tasks</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+        <h1 className="text-2xl font-bold text-text-primary">Tasks</h1>
+        <p className="text-sm mt-1 text-text-muted">
           {activeTasks.length} active · {doneTasks.length} completed
         </p>
       </div>
@@ -62,22 +59,12 @@ export default function Tasks() {
             value={newTask}
             onChange={e => setNewTask(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
-            className="flex-1 px-3 py-2 rounded-lg border text-sm outline-none focus:ring-2 focus:ring-indigo-500/50"
-            style={{
-              backgroundColor: 'var(--bg-secondary)',
-              borderColor: 'var(--border)',
-              color: 'var(--text-primary)',
-            }}
+            className="flex-1 px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none focus:ring-2 focus:ring-accent/50"
           />
           <select
             value={newPriority}
             onChange={e => setNewPriority(e.target.value)}
-            className="px-3 py-2 rounded-lg border text-sm outline-none"
-            style={{
-              backgroundColor: 'var(--bg-secondary)',
-              borderColor: 'var(--border)',
-              color: 'var(--text-primary)',
-            }}
+            className="px-3 py-2 rounded-lg border border-border-default bg-bg-secondary text-text-primary text-sm outline-none"
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -86,8 +73,7 @@ export default function Tasks() {
           </select>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
-            style={{ backgroundColor: 'var(--accent)' }}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-accent hover:bg-accent-hover transition-colors"
           >
             <Plus size={16} />
           </button>
@@ -97,32 +83,28 @@ export default function Tasks() {
       {/* Active Tasks */}
       <Card title="Active" subtitle={`${activeTasks.length} tasks`}>
         {loading ? (
-          <p className="text-sm py-4 text-center" style={{ color: 'var(--text-muted)' }}>Loading...</p>
+          <p className="text-sm py-4 text-center text-text-muted">Loading...</p>
         ) : activeTasks.length === 0 ? (
-          <p className="text-sm py-4 text-center" style={{ color: 'var(--text-muted)' }}>All done! 🎉</p>
+          <p className="text-sm py-4 text-center text-text-muted">All done! 🎉</p>
         ) : (
           <div className="space-y-2">
             {activeTasks.map(task => (
               <div
                 key={task.id}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg group"
-                style={{ backgroundColor: 'var(--bg-secondary)' }}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-bg-secondary group"
               >
                 <button
                   onClick={() => handleToggle(task)}
-                  className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors hover:border-green-500"
-                  style={{ borderColor: 'var(--border)' }}
-                >
-                </button>
-                <div
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: priorityColors[task.priority] }}
+                  className="w-5 h-5 rounded border-2 border-border-default flex items-center justify-center shrink-0 transition-colors hover:border-success"
                 />
-                <span className="text-sm flex-1">{task.title}</span>
+                <div
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{ backgroundColor: priorityColor[task.priority] }}
+                />
+                <span className="text-sm flex-1 text-text-primary">{task.title}</span>
                 <button
                   onClick={() => handleDelete(task.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ color: 'var(--text-muted)' }}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-danger"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -139,21 +121,18 @@ export default function Tasks() {
             {doneTasks.slice(0, 10).map(task => (
               <div
                 key={task.id}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg opacity-60"
-                style={{ backgroundColor: 'var(--bg-secondary)' }}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-bg-secondary opacity-60 group"
               >
                 <button
                   onClick={() => handleToggle(task)}
-                  className="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0"
-                  style={{ borderColor: 'var(--success)', backgroundColor: 'var(--success)' }}
+                  className="w-5 h-5 rounded border-2 border-success bg-success flex items-center justify-center shrink-0"
                 >
                   <Check size={12} color="white" />
                 </button>
-                <span className="text-sm flex-1 line-through">{task.title}</span>
+                <span className="text-sm flex-1 line-through text-text-primary">{task.title}</span>
                 <button
                   onClick={() => handleDelete(task.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ color: 'var(--text-muted)' }}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-danger"
                 >
                   <Trash2 size={14} />
                 </button>
