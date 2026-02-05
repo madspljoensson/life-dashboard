@@ -32,22 +32,22 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '256px' }}>
         <div className="text-sm text-text-muted">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-text-primary">{greeting()}</h1>
-        <p className="text-sm mt-1 text-text-muted">{todayStr}</p>
+        <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#e4e4e7' }}>{greeting()}</h1>
+        <p style={{ fontSize: '14px', marginTop: '4px', color: '#71717a' }}>{todayStr}</p>
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
         <StatCard
           label="Active Tasks"
           value={activeTasks.length}
@@ -78,35 +78,38 @@ export default function Dashboard() {
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
         {/* Tasks */}
         <Card title="Today's Tasks" subtitle={`${activeTasks.length} active`}>
           {activeTasks.length === 0 ? (
-            <p className="text-sm py-4 text-center text-text-muted">
+            <p className="text-sm text-text-muted" style={{ padding: '16px 0', textAlign: 'center' }}>
               No active tasks. Nice! 🎉
             </p>
           ) : (
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '256px', overflowY: 'auto' }}>
               {activeTasks.slice(0, 8).map(task => (
                 <div
                   key={task.id}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg bg-bg-secondary"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    padding: '8px 12px', borderRadius: '8px', backgroundColor: '#12121a',
+                  }}
                 >
-                  <div
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{
-                      backgroundColor:
-                        task.priority === 'urgent' ? '#ef4444' :
-                        task.priority === 'high' ? '#f59e0b' :
-                        task.priority === 'medium' ? '#6366f1' : '#71717a',
-                    }}
-                  />
-                  <span className="text-sm flex-1 truncate text-text-primary">{task.title}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    task.status === 'in_progress'
-                      ? 'bg-accent/20 text-accent'
-                      : 'bg-border-default text-text-muted'
-                  }`}>
+                  <div style={{
+                    width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
+                    backgroundColor:
+                      task.priority === 'urgent' ? '#ef4444' :
+                      task.priority === 'high' ? '#f59e0b' :
+                      task.priority === 'medium' ? '#6366f1' : '#71717a',
+                  }} />
+                  <span style={{ fontSize: '14px', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: '#e4e4e7' }}>
+                    {task.title}
+                  </span>
+                  <span style={{
+                    fontSize: '12px', padding: '2px 8px', borderRadius: '9999px',
+                    backgroundColor: task.status === 'in_progress' ? '#6366f133' : '#2a2a40',
+                    color: task.status === 'in_progress' ? '#6366f1' : '#71717a',
+                  }}>
                     {task.status === 'in_progress' ? 'In Progress' : 'Todo'}
                   </span>
                 </div>
@@ -118,30 +121,31 @@ export default function Dashboard() {
         {/* Sleep Chart */}
         <Card title="Sleep This Week" subtitle={sleepStats?.avg_quality ? `Avg quality: ${sleepStats.avg_quality}/5` : undefined}>
           {!sleepStats?.data?.length ? (
-            <p className="text-sm py-4 text-center text-text-muted">
+            <p className="text-sm text-text-muted" style={{ padding: '16px 0', textAlign: 'center' }}>
               No sleep data yet. Start tracking! 🌙
             </p>
           ) : (
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {sleepStats.data.map(entry => (
                 <div
                   key={entry.id}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg bg-bg-secondary"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    padding: '8px 12px', borderRadius: '8px', backgroundColor: '#12121a',
+                  }}
                 >
-                  <span className="text-xs w-16 text-text-muted">
+                  <span style={{ fontSize: '12px', width: '64px', color: '#71717a' }}>
                     {format(new Date(entry.date), 'EEE d')}
                   </span>
-                  <div className="flex-1 h-2 rounded-full overflow-hidden bg-border-default">
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{
-                        width: `${Math.min(((entry.duration_hours || 0) / 10) * 100, 100)}%`,
-                        backgroundColor: (entry.duration_hours || 0) >= 7 ? '#22c55e' :
-                                          (entry.duration_hours || 0) >= 5 ? '#f59e0b' : '#ef4444',
-                      }}
-                    />
+                  <div style={{ flex: 1, height: '8px', borderRadius: '9999px', overflow: 'hidden', backgroundColor: '#2a2a40' }}>
+                    <div style={{
+                      height: '100%', borderRadius: '9999px',
+                      width: `${Math.min(((entry.duration_hours || 0) / 10) * 100, 100)}%`,
+                      backgroundColor: (entry.duration_hours || 0) >= 7 ? '#22c55e' :
+                                        (entry.duration_hours || 0) >= 5 ? '#f59e0b' : '#ef4444',
+                    }} />
                   </div>
-                  <span className="text-xs w-10 text-right font-mono text-text-secondary">
+                  <span style={{ fontSize: '12px', width: '40px', textAlign: 'right', fontFamily: 'monospace', color: '#a1a1aa' }}>
                     {entry.duration_hours ? `${entry.duration_hours}h` : '—'}
                   </span>
                 </div>
@@ -154,11 +158,11 @@ export default function Dashboard() {
       {/* Daily Note */}
       <Card title="Today's Note">
         {todayNote?.note ? (
-          <p className="text-sm leading-relaxed text-text-secondary">
+          <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#a1a1aa' }}>
             {todayNote.note}
           </p>
         ) : (
-          <p className="text-sm py-2 text-text-muted">
+          <p style={{ fontSize: '14px', padding: '8px 0', color: '#71717a' }}>
             No note for today yet.
           </p>
         )}

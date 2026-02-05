@@ -10,9 +10,9 @@ import Habits from './pages/Habits'
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen">
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar />
-        <main className="flex-1 ml-64 p-8 max-w-5xl">
+        <main style={{ flex: 1, marginLeft: '256px', padding: '32px', maxWidth: '1200px' }}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/tasks" element={<Tasks />} />
