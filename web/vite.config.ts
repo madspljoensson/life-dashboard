@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 5173,
+    allowedHosts: ['theseus.madspljoensson.xyz', 'localhost'],
     proxy: {
       '/api': {
         target: 'http://localhost:4810',
