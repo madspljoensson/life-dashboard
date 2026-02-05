@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity } from 'lucide-react'
 
 const links = [
@@ -9,6 +9,29 @@ const links = [
   { to: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { to: '/habits', icon: Activity, label: 'Habits' },
 ]
+
+function SidebarLink({ to, icon: Icon, label }: { to: string; icon: typeof LayoutDashboard; label: string }) {
+  const location = useLocation()
+  const active = to === '/' ? location.pathname === '/' : location.pathname.startsWith(to)
+
+  return (
+    <NavLink
+      to={to}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '10px',
+        padding: '9px 12px', borderRadius: '8px',
+        fontSize: '13px', fontWeight: active ? 500 : 400,
+        color: active ? '#f0f0f2' : '#5a5a66',
+        backgroundColor: active ? '#1a1a24' : 'transparent',
+        textDecoration: 'none',
+        transition: 'all 0.15s ease',
+      }}
+    >
+      <Icon size={16} strokeWidth={active ? 2 : 1.5} />
+      {label}
+    </NavLink>
+  )
+}
 
 export default function Sidebar() {
   return (
@@ -29,23 +52,8 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav style={{ flex: 1, padding: '0 12px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-        {links.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            style={({ isActive }) => ({
-              display: 'flex', alignItems: 'center', gap: '10px',
-              padding: '9px 12px', borderRadius: '8px',
-              fontSize: '13px', fontWeight: isActive ? 500 : 400,
-              color: isActive ? '#f0f0f2' : '#5a5a66',
-              backgroundColor: isActive ? '#1a1a24' : 'transparent',
-              textDecoration: 'none',
-              transition: 'all 0.15s ease',
-            })}
-          >
-            <Icon size={16} strokeWidth={isActive ? 2 : 1.5} />
-            {label}
-          </NavLink>
+        {links.map(({ to, icon, label }) => (
+          <SidebarLink key={to} to={to} icon={icon} label={label} />
         ))}
       </nav>
 
