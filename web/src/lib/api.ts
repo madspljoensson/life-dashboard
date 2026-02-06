@@ -34,6 +34,14 @@ export const sleep = {
     request<import('../types').SleepEntry>(`/sleep/${date}`),
   weeklyStats: () =>
     request<import('../types').WeeklySleepStats>('/sleep/stats/weekly'),
+  chartData: (days?: number) =>
+    request<import('../types').SleepChartData[]>(`/sleep/chart-data?days=${days || 30}`),
+  score: () =>
+    request<import('../types').SleepScore>('/sleep/score'),
+  getTarget: () =>
+    request<import('../types').SleepTarget>('/sleep/target'),
+  setTarget: (hours: number) =>
+    request<import('../types').SleepTarget>('/sleep/target', { method: 'PUT', body: JSON.stringify({ target_hours: hours }) }),
 }
 
 // Daily
@@ -46,6 +54,8 @@ export const daily = {
     request<import('../types').DailyNote>('/daily/', { method: 'POST', body: JSON.stringify(data) }),
   update: (date: string, data: Partial<import('../types').DailyNote>) =>
     request<import('../types').DailyNote>(`/daily/${date}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  trends: (days?: number) =>
+    request<import('../types').DailyTrend[]>(`/daily/trends?days=${days || 30}`),
 }
 
 // Inventory
@@ -74,4 +84,41 @@ export const inventory = {
     request<import('../types').InventoryCategory>(`/inventory/categories/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteCategory: (id: number) =>
     request<void>(`/inventory/categories/${id}`, { method: 'DELETE' }),
+}
+
+// Settings
+export const settings = {
+  get: () =>
+    request<Record<string, string>>('/settings/'),
+  update: (data: Record<string, string>) =>
+    request<void>('/settings/', { method: 'PUT', body: JSON.stringify(data) }),
+  getSingle: (key: string) =>
+    request<{ key: string; value: string }>(`/settings/${key}`),
+  setSingle: (key: string, value: string) =>
+    request<void>(`/settings/${key}`, { method: 'PUT', body: JSON.stringify({ value }) }),
+}
+
+// Habits
+export const habits = {
+  list: (category?: string, active?: boolean) => {
+    const params = new URLSearchParams()
+    if (category) params.append('category', category)
+    if (active !== undefined) params.append('active', String(active))
+    const query = params.toString()
+    return request<import('../types').Habit[]>(`/habits/${query ? `?${query}` : ''}`)
+  },
+  create: (data: Partial<import('../types').Habit>) =>
+    request<import('../types').Habit>('/habits/', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: Partial<import('../types').Habit>) =>
+    request<import('../types').Habit>(`/habits/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (id: number) =>
+    request<void>(`/habits/${id}`, { method: 'DELETE' }),
+  log: (id: number, data: { date: string; completed: boolean; value?: number | null }) =>
+    request<import('../types').HabitLog>(`/habits/${id}/log`, { method: 'POST', body: JSON.stringify(data) }),
+  streak: (id: number) =>
+    request<import('../types').HabitStreak>(`/habits/${id}/streak`),
+  heatmap: () =>
+    request<import('../types').HeatmapData[]>('/habits/heatmap'),
+  stats: () =>
+    request<import('../types').HabitStats>('/habits/stats'),
 }

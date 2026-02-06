@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity, Package } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity, Package, Settings } from 'lucide-react'
 
 const links = [
   { to: '/', icon: LayoutDashboard, label: 'Overview' },
@@ -10,6 +10,8 @@ const links = [
   { to: '/habits', icon: Activity, label: 'Habits' },
   { to: '/inventory', icon: Package, label: 'Inventory' },
 ]
+
+// TODO: filter by enabled_modules from settings
 
 function SidebarLink({ to, icon: Icon, label }: { to: string; icon: typeof LayoutDashboard; label: string }) {
   const location = useLocation()
@@ -55,9 +57,12 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer */}
-      <div style={{ padding: '16px 24px', fontSize: '10px', color: '#33333f', letterSpacing: '0.02em' }}>
-        v0.1.0
+      {/* Settings & Footer */}
+      <div style={{ padding: '0 12px 16px' }}>
+        <SidebarLink to="/settings" icon={Settings} label="Settings" />
+        <div style={{ padding: '12px 12px 0', fontSize: '10px', color: '#33333f', letterSpacing: '0.02em' }}>
+          v0.1.0
+        </div>
       </div>
     </aside>
   )

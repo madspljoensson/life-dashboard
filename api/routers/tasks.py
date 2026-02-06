@@ -48,10 +48,23 @@ class TaskResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+@router.get("/overdue", response_model=list[TaskResponse])
+async def list_overdue_tasks(db: Session = Depends(get_db)):
+    """Get all tasks that are overdue (due_date < today and status != done)."""
+    today = date.today()
+    return (
+        db.query(Task)
+        .filter(Task.due_date < today, Task.status != "done")
+        .order_by(Task.due_date.asc())
+        .all()
+    )
+
+
 @router.get("/", response_model=list[TaskResponse])
 async def list_tasks(
     status: Optional[str] = None,
     priority: Optional[str] = None,
+    due_date: Optional[date] = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(Task)
@@ -59,6 +72,8 @@ async def list_tasks(
         query = query.filter(Task.status == status)
     if priority:
         query = query.filter(Task.priority == priority)
+    if due_date:
+        query = query.filter(Task.due_date == due_date)
     return query.order_by(Task.created_at.desc()).all()
 
 

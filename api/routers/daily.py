@@ -1,6 +1,6 @@
 """Daily overview endpoints — mood, energy, notes, highlights."""
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -40,6 +40,13 @@ class DailyResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class TrendEntry(BaseModel):
+    date: date
+    mood: Optional[int]
+    energy: Optional[int]
+
+
+# Static routes must come BEFORE parameterized routes
 @router.get("/", response_model=list[DailyResponse])
 async def list_daily(limit: int = 30, db: Session = Depends(get_db)):
     return (
@@ -67,6 +74,28 @@ async def get_today(db: Session = Depends(get_db)):
     return entry
 
 
+@router.get("/trends", response_model=list[TrendEntry])
+async def get_trends(days: int = 30, db: Session = Depends(get_db)):
+    """Get mood and energy trends for charting."""
+    start_date = date.today() - timedelta(days=days)
+    entries = (
+        db.query(DailyNote)
+        .filter(DailyNote.date >= start_date)
+        .order_by(DailyNote.date.asc())
+        .all()
+    )
+
+    return [
+        TrendEntry(
+            date=e.date,
+            mood=e.mood,
+            energy=e.energy
+        )
+        for e in entries
+    ]
+
+
+# Parameterized routes MUST come after static routes
 @router.get("/{entry_date}", response_model=DailyResponse)
 async def get_daily(entry_date: date, db: Session = Depends(get_db)):
     entry = db.query(DailyNote).filter(DailyNote.date == entry_date).first()

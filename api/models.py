@@ -113,3 +113,43 @@ class InventoryCategory(Base):
     name = Column(String(100), nullable=False, unique=True)
     color = Column(String(7), nullable=True)  # hex color
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Habit(Base):
+    __tablename__ = "habits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    category = Column(String(50), nullable=True)  # health, mind, productivity, other
+    icon = Column(String(50), nullable=True)
+    target_frequency = Column(String(20), nullable=True)  # daily, weekly
+    created_at = Column(DateTime, default=datetime.utcnow)
+    active = Column(Boolean, default=True)
+
+
+class HabitLog(Base):
+    __tablename__ = "habit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    habit_id = Column(Integer, nullable=False, index=True)
+    date = Column(Date, nullable=False, index=True)
+    completed = Column(Boolean, default=False)
+    value = Column(Float, nullable=True)  # optional quantifiable value
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class SleepSettings(Base):
+    __tablename__ = "sleep_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    target_hours = Column(Float, default=8.0)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class UserSettings(Base):
+    __tablename__ = "user_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(100), unique=True, nullable=False, index=True)
+    value = Column(Text, nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
