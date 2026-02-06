@@ -98,6 +98,134 @@ export const settings = {
     request<void>(`/settings/${key}`, { method: 'PUT', body: JSON.stringify({ value }) }),
 }
 
+// Nutrition
+export const nutrition = {
+  logMeal: (data: Record<string, unknown>) =>
+    request<import('../types').MealEntry>('/nutrition/', { method: 'POST', body: JSON.stringify(data) }),
+  getMeals: (date?: string) => {
+    const params = new URLSearchParams()
+    if (date) params.append('date', date)
+    const query = params.toString()
+    return request<import('../types').MealEntry[]>(`/nutrition/${query ? `?${query}` : ''}`)
+  },
+  getDailyTotals: (date?: string) => {
+    const params = new URLSearchParams()
+    if (date) params.append('date', date)
+    const query = params.toString()
+    return request<import('../types').DailyTotals>(`/nutrition/daily-totals${query ? `?${query}` : ''}`)
+  },
+  getTrends: (days = 7) =>
+    request<import('../types').NutritionTrend[]>(`/nutrition/trends?days=${days}`),
+  logWater: (data: { date: string; glasses: number; target?: number }) =>
+    request<import('../types').WaterIntake>('/nutrition/water', { method: 'POST', body: JSON.stringify(data) }),
+  getWater: (date?: string) => {
+    const params = new URLSearchParams()
+    if (date) params.append('date', date)
+    const query = params.toString()
+    return request<import('../types').WaterIntake>(`/nutrition/water${query ? `?${query}` : ''}`)
+  },
+  updateWater: (date: string, data: { glasses?: number; target?: number }) =>
+    request<import('../types').WaterIntake>(`/nutrition/water/${date}`, { method: 'PUT', body: JSON.stringify(data) }),
+}
+
+// Fitness
+export const fitness = {
+  createWorkout: (data: Record<string, unknown>) =>
+    request<import('../types').Workout>('/fitness/workouts', { method: 'POST', body: JSON.stringify(data) }),
+  listWorkouts: (limit = 20) =>
+    request<import('../types').Workout[]>(`/fitness/workouts?limit=${limit}`),
+  getWorkout: (id: number) =>
+    request<import('../types').Workout>(`/fitness/workouts/${id}`),
+  deleteWorkout: (id: number) =>
+    request<void>(`/fitness/workouts/${id}`, { method: 'DELETE' }),
+  exerciseHistory: (name: string) =>
+    request<import('../types').ExerciseHistory[]>(`/fitness/exercises/${encodeURIComponent(name)}/history`),
+  listTemplates: () =>
+    request<import('../types').WorkoutTemplate[]>('/fitness/templates'),
+  createTemplate: (data: { name: string; workout_type: string; exercises_json: string }) =>
+    request<import('../types').WorkoutTemplate>('/fitness/templates', { method: 'POST', body: JSON.stringify(data) }),
+  deleteTemplate: (id: number) =>
+    request<void>(`/fitness/templates/${id}`, { method: 'DELETE' }),
+  getStats: () =>
+    request<import('../types').FitnessStats>('/fitness/stats'),
+}
+
+// Finance
+export const finance = {
+  createTransaction: (data: Record<string, unknown>) =>
+    request<import('../types').FinanceTransaction>('/finance/transactions', { method: 'POST', body: JSON.stringify(data) }),
+  listTransactions: (month?: string, category?: string) => {
+    const params = new URLSearchParams()
+    if (month) params.append('month', month)
+    if (category) params.append('category', category)
+    const query = params.toString()
+    return request<import('../types').FinanceTransaction[]>(`/finance/transactions${query ? `?${query}` : ''}`)
+  },
+  deleteTransaction: (id: number) =>
+    request<void>(`/finance/transactions/${id}`, { method: 'DELETE' }),
+  getSummary: (month?: string) => {
+    const params = new URLSearchParams()
+    if (month) params.append('month', month)
+    const query = params.toString()
+    return request<import('../types').FinanceSummary>(`/finance/summary${query ? `?${query}` : ''}`)
+  },
+  getTrends: (months = 6) =>
+    request<import('../types').FinanceTrend[]>(`/finance/trends?months=${months}`),
+  createBudget: (data: { category: string; monthly_limit: number }) =>
+    request<import('../types').FinanceBudget>('/finance/budgets', { method: 'POST', body: JSON.stringify(data) }),
+  listBudgets: () =>
+    request<import('../types').FinanceBudget[]>('/finance/budgets'),
+  updateBudget: (id: number, data: { category?: string; monthly_limit?: number }) =>
+    request<import('../types').FinanceBudget>(`/finance/budgets/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteBudget: (id: number) =>
+    request<void>(`/finance/budgets/${id}`, { method: 'DELETE' }),
+}
+
+// Goals
+export const goals = {
+  create: (data: Record<string, unknown>) =>
+    request<import('../types').Goal>('/goals/', { method: 'POST', body: JSON.stringify(data) }),
+  list: (status?: string, category?: string) => {
+    const params = new URLSearchParams()
+    if (status) params.append('status', status)
+    if (category) params.append('category', category)
+    const query = params.toString()
+    return request<import('../types').Goal[]>(`/goals/${query ? `?${query}` : ''}`)
+  },
+  get: (id: number) =>
+    request<import('../types').GoalWithMilestones>(`/goals/${id}`),
+  update: (id: number, data: Record<string, unknown>) =>
+    request<import('../types').Goal>(`/goals/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) =>
+    request<void>(`/goals/${id}`, { method: 'DELETE' }),
+  createMilestone: (goalId: number, data: { title: string; target_date?: string; sort_order?: number }) =>
+    request<import('../types').Milestone>(`/goals/${goalId}/milestones`, { method: 'POST', body: JSON.stringify(data) }),
+  updateMilestone: (goalId: number, mid: number, data: Record<string, unknown>) =>
+    request<import('../types').Milestone>(`/goals/${goalId}/milestones/${mid}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteMilestone: (goalId: number, mid: number) =>
+    request<void>(`/goals/${goalId}/milestones/${mid}`, { method: 'DELETE' }),
+  getStats: () =>
+    request<import('../types').GoalStats>('/goals/stats'),
+}
+
+// Subscriptions
+export const subscriptions = {
+  create: (data: Record<string, unknown>) =>
+    request<import('../types').Subscription>('/subscriptions/', { method: 'POST', body: JSON.stringify(data) }),
+  list: (active?: boolean) => {
+    const params = new URLSearchParams()
+    if (active !== undefined) params.append('active', String(active))
+    const query = params.toString()
+    return request<import('../types').Subscription[]>(`/subscriptions/${query ? `?${query}` : ''}`)
+  },
+  update: (id: number, data: Record<string, unknown>) =>
+    request<import('../types').Subscription>(`/subscriptions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) =>
+    request<void>(`/subscriptions/${id}`, { method: 'DELETE' }),
+  getStats: () =>
+    request<import('../types').SubscriptionStats>('/subscriptions/stats'),
+}
+
 // Habits
 export const habits = {
   list: (category?: string, active?: boolean) => {

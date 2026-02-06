@@ -7,6 +7,10 @@ import Daily from './pages/Daily'
 import Nutrition from './pages/Nutrition'
 import Habits from './pages/Habits'
 import Inventory from './pages/Inventory'
+import Fitness from './pages/Fitness'
+import Finance from './pages/Finance'
+import Goals from './pages/Goals'
+import Subscriptions from './pages/Subscriptions'
 import Settings from './pages/Settings'
 
 export default function App() {
@@ -27,6 +31,10 @@ export default function App() {
             <Route path="/daily" element={<Daily />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/habits" element={<Habits />} />
+            <Route path="/fitness" element={<Fitness />} />
+            <Route path="/finance" element={<Finance />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity, Package, Settings } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity, Dumbbell, DollarSign, Target, CreditCard, Package, Settings } from 'lucide-react'
 
 const links = [
   { to: '/', icon: LayoutDashboard, label: 'Overview' },
@@ -8,6 +8,10 @@ const links = [
   { to: '/daily', icon: CalendarDays, label: 'Journal' },
   { to: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { to: '/habits', icon: Activity, label: 'Habits' },
+  { to: '/fitness', icon: Dumbbell, label: 'Fitness' },
+  { to: '/finance', icon: DollarSign, label: 'Finance' },
+  { to: '/goals', icon: Target, label: 'Goals' },
+  { to: '/subscriptions', icon: CreditCard, label: 'Subscriptions' },
   { to: '/inventory', icon: Package, label: 'Inventory' },
 ]
 

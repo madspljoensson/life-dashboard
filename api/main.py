@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import init_db
-from routers import tasks, sleep, daily, health, inventory, habits, settings
+from routers import tasks, sleep, daily, health, inventory, habits, settings, nutrition, fitness, finance, goals, subscriptions
 
 
 @asynccontextmanager
@@ -37,6 +37,11 @@ app.include_router(health.router, prefix="/api/health", tags=["health"])
 app.include_router(inventory.router, prefix="/api/inventory", tags=["inventory"])
 app.include_router(habits.router, prefix="/api/habits", tags=["habits"])
 app.include_router(settings.router, prefix="/api/settings", tags=["settings"])
+app.include_router(nutrition.router, prefix="/api/nutrition", tags=["nutrition"])
+app.include_router(fitness.router, prefix="/api/fitness", tags=["fitness"])
+app.include_router(finance.router, prefix="/api/finance", tags=["finance"])
+app.include_router(goals.router, prefix="/api/goals", tags=["goals"])
+app.include_router(subscriptions.router, prefix="/api/subscriptions", tags=["subscriptions"])
 
 
 @app.get("/api/ping")

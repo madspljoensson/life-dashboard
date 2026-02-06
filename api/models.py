@@ -153,3 +153,107 @@ class UserSettings(Base):
     key = Column(String(100), unique=True, nullable=False, index=True)
     value = Column(Text, nullable=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class WaterIntake(Base):
+    __tablename__ = "water_intake"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=False, index=True)
+    glasses = Column(Integer, nullable=False)
+    target = Column(Integer, default=8)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Workout(Base):
+    __tablename__ = "workouts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=False, index=True)
+    workout_type = Column(String(20), nullable=False)
+    name = Column(String(200), nullable=False)
+    duration_minutes = Column(Integer, nullable=True)
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Exercise(Base):
+    __tablename__ = "exercises"
+
+    id = Column(Integer, primary_key=True, index=True)
+    workout_id = Column(Integer, nullable=False, index=True)
+    name = Column(String(200), nullable=False)
+    sets = Column(Integer, nullable=False)
+    reps = Column(Integer, nullable=False)
+    weight = Column(Float, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class WorkoutTemplate(Base):
+    __tablename__ = "workout_templates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    workout_type = Column(String(20), nullable=False)
+    exercises_json = Column(Text, nullable=False)
+
+
+class Transaction(Base):
+    __tablename__ = "transactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, nullable=False, index=True)
+    amount = Column(Float, nullable=False)
+    category = Column(String(50), nullable=False)
+    description = Column(Text, nullable=True)
+    transaction_type = Column(String(20), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String(50), unique=True, nullable=False)
+    monthly_limit = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Goal(Base):
+    __tablename__ = "goals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    category = Column(String(50), nullable=False)
+    target_date = Column(Date, nullable=True)
+    progress_pct = Column(Integer, default=0)
+    status = Column(String(20), default="active")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class Milestone(Base):
+    __tablename__ = "milestones"
+
+    id = Column(Integer, primary_key=True, index=True)
+    goal_id = Column(Integer, nullable=False, index=True)
+    title = Column(String(500), nullable=False)
+    completed = Column(Boolean, default=False)
+    target_date = Column(Date, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+    sort_order = Column(Integer, default=0)
+
+
+class Subscription(Base):
+    __tablename__ = "subscriptions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    cost = Column(Float, nullable=False)
+    billing_cycle = Column(String(20), nullable=False)
+    next_renewal = Column(Date, nullable=False)
+    category = Column(String(50), nullable=True)
+    active = Column(Boolean, default=True)
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
