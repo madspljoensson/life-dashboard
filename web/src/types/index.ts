@@ -118,11 +118,12 @@ export interface SleepChartData {
 
 export interface SleepScore {
   score: number
-  components: {
-    duration_score: number
-    quality_score: number
-    consistency_score: number
-  }
+  duration_score: number
+  quality_score: number
+  consistency_score: number
+  avg_duration: number | null
+  avg_quality: number | null
+  target_hours: number
 }
 
 export interface SleepTarget {

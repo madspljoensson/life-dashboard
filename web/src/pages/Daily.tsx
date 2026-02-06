@@ -94,8 +94,8 @@ export default function Daily() {
           padding: '20px',
         }}>
           <h3 style={sectionHeaderStyle}>MOOD AND ENERGY TRENDS</h3>
-          <div style={{ width: '100%', height: 220 }}>
-            <ResponsiveContainer width="100%" height="100%">
+          <div style={{ width: '100%', height: 220, minWidth: '200px' }}>
+            <ResponsiveContainer width="100%" height={220}>
               <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
                 <XAxis

@@ -171,14 +171,14 @@ export default function Sleep() {
               <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: '#1a1a24', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
-                  width: `${sleepScore?.components.duration_score ?? 0}%`,
+                  width: `${sleepScore?.duration_score ?? 0}%`,
                   backgroundColor: '#8b7cf6',
                   borderRadius: '3px',
                   transition: 'width 0.5s ease',
                 }} />
               </div>
               <span style={{ fontSize: '12px', color: '#5a5a66', width: '32px', textAlign: 'right' }}>
-                {sleepScore?.components.duration_score ?? '--'}
+                {sleepScore?.duration_score ?? '--'}
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -186,14 +186,14 @@ export default function Sleep() {
               <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: '#1a1a24', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
-                  width: `${sleepScore?.components.quality_score ?? 0}%`,
+                  width: `${sleepScore?.quality_score ?? 0}%`,
                   backgroundColor: '#4ade80',
                   borderRadius: '3px',
                   transition: 'width 0.5s ease',
                 }} />
               </div>
               <span style={{ fontSize: '12px', color: '#5a5a66', width: '32px', textAlign: 'right' }}>
-                {sleepScore?.components.quality_score ?? '--'}
+                {sleepScore?.quality_score ?? '--'}
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -201,14 +201,14 @@ export default function Sleep() {
               <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: '#1a1a24', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
-                  width: `${sleepScore?.components.consistency_score ?? 0}%`,
+                  width: `${sleepScore?.consistency_score ?? 0}%`,
                   backgroundColor: '#60a5fa',
                   borderRadius: '3px',
                   transition: 'width 0.5s ease',
                 }} />
               </div>
               <span style={{ fontSize: '12px', color: '#5a5a66', width: '32px', textAlign: 'right' }}>
-                {sleepScore?.components.consistency_score ?? '--'}
+                {sleepScore?.consistency_score ?? '--'}
               </span>
             </div>
           </div>
@@ -235,8 +235,8 @@ export default function Sleep() {
             <button onClick={() => setChartDays(30)} style={toggleButtonStyle(chartDays === 30)}>30 DAYS</button>
           </div>
         </div>
-        <div style={{ width: '100%', height: '280px' }}>
-          <ResponsiveContainer width="100%" height="100%">
+        <div style={{ width: '100%', height: '280px', minWidth: '200px' }}>
+          <ResponsiveContainer width="100%" height={280}>
             <LineChart data={formattedChartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
               <XAxis
