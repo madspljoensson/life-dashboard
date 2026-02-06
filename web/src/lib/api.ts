@@ -47,3 +47,31 @@ export const daily = {
   update: (date: string, data: Partial<import('../types').DailyNote>) =>
     request<import('../types').DailyNote>(`/daily/${date}`, { method: 'PATCH', body: JSON.stringify(data) }),
 }
+
+// Inventory
+export const inventory = {
+  list: (status?: string, category?: string, tag?: string) => {
+    const params = new URLSearchParams()
+    if (status) params.append('status', status)
+    if (category) params.append('category', category)
+    if (tag) params.append('tag', tag)
+    const query = params.toString()
+    return request<import('../types').InventoryItem[]>(`/inventory/${query ? `?${query}` : ''}`)
+  },
+  create: (data: Partial<import('../types').InventoryItem>) =>
+    request<import('../types').InventoryItem>('/inventory/', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: Partial<import('../types').InventoryItem>) =>
+    request<import('../types').InventoryItem>(`/inventory/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (id: number) =>
+    request<void>(`/inventory/${id}`, { method: 'DELETE' }),
+  stats: () =>
+    request<import('../types').InventoryStats>('/inventory/stats'),
+  categories: () =>
+    request<import('../types').InventoryCategory[]>('/inventory/categories'),
+  createCategory: (data: { name: string; color?: string }) =>
+    request<import('../types').InventoryCategory>('/inventory/categories', { method: 'POST', body: JSON.stringify(data) }),
+  updateCategory: (id: number, data: { name?: string; color?: string }) =>
+    request<import('../types').InventoryCategory>(`/inventory/categories/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  deleteCategory: (id: number) =>
+    request<void>(`/inventory/categories/${id}`, { method: 'DELETE' }),
+}

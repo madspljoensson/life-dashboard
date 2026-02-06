@@ -6,6 +6,7 @@ import Sleep from './pages/Sleep'
 import Daily from './pages/Daily'
 import Nutrition from './pages/Nutrition'
 import Habits from './pages/Habits'
+import Inventory from './pages/Inventory'
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/daily" element={<Daily />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/habits" element={<Habits />} />
+            <Route path="/inventory" element={<Inventory />} />
           </Routes>
         </main>
       </div>

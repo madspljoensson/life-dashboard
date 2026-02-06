@@ -86,3 +86,30 @@ class DailyNote(Base):
     highlights = Column(Text, nullable=True)  # Comma-separated or JSON
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class InventoryItem(Base):
+    __tablename__ = "inventory_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(500), nullable=False)
+    category = Column(String(100), nullable=False)
+    status = Column(String(20), nullable=False)  # "owned", "wishlist", "ai_suggested"
+    priority = Column(String(20), nullable=True)  # low, medium, high (for wishlist/suggested)
+    price = Column(Float, nullable=True)
+    currency = Column(String(10), default="DKK")
+    purchase_date = Column(Date, nullable=True)
+    notes = Column(Text, nullable=True)
+    ai_reason = Column(Text, nullable=True)  # why AI suggested it
+    tags = Column(Text, nullable=True)  # comma-separated tags
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class InventoryCategory(Base):
+    __tablename__ = "inventory_categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True)
+    color = Column(String(7), nullable=True)  # hex color
+    created_at = Column(DateTime, default=datetime.utcnow)

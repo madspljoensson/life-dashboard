@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Moon, CalendarDays, Utensils, Activity, Package } from 'lucide-react'
 
 const links = [
   { to: '/', icon: LayoutDashboard, label: 'Overview' },
@@ -8,6 +8,7 @@ const links = [
   { to: '/daily', icon: CalendarDays, label: 'Journal' },
   { to: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { to: '/habits', icon: Activity, label: 'Habits' },
+  { to: '/inventory', icon: Package, label: 'Inventory' },
 ]
 
 function SidebarLink({ to, icon: Icon, label }: { to: string; icon: typeof LayoutDashboard; label: string }) {
@@ -44,9 +45,6 @@ export default function Sidebar() {
       <div style={{ padding: '28px 24px 24px' }}>
         <div style={{ fontSize: '15px', fontWeight: 600, color: '#f0f0f2', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
           Theseus
-        </div>
-        <div style={{ fontSize: '11px', color: '#5a5a66', marginTop: '4px', letterSpacing: '0.04em' }}>
-          Board by board
         </div>
       </div>
 
